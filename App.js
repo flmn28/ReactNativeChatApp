@@ -11,6 +11,11 @@ import {
   Text,
   View
 } from 'react-native';
+import {
+  Scene,
+  Router,
+} from 'react-native-router-flux';
+import LoginForm from './src/LoginForm'
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -19,20 +24,14 @@ const instructions = Platform.select({
     'Shake or press menu button for dev menu',
 });
 
-export default class App extends Component<{}> {
+export default class App extends Component {
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
-      </View>
+      <Router>
+        <Scene key="root">
+          <Scene key="login" initial component={LoginForm} title="ログイン" hideNavBar={true} />
+        </Scene>
+      </Router>
     );
   }
 }
