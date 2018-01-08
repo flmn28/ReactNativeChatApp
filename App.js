@@ -16,6 +16,7 @@ import {
   Router,
 } from 'react-native-router-flux';
 import LoginForm from './src/LoginForm'
+import ChatRoom from './src/ChatRoom'
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -27,11 +28,14 @@ const instructions = Platform.select({
 export default class App extends Component {
   render() {
     return (
-      <Router>
-        <Scene key="root">
-          <Scene key="login" initial component={LoginForm} title="ログイン" hideNavBar={true} />
-        </Scene>
-      </Router>
+      <View style={styles.container}>
+        <Router>
+          <Scene key="root">
+            <Scene key="login" initial component={LoginForm} title="ログイン" hideNavBar={true} />
+            <Scene key="chatroom" component={ChatRoom} title="チャットルーム" hideNavBar={true} />
+          </Scene>
+        </Router>
+      </View>
     );
   }
 }
@@ -39,9 +43,10 @@ export default class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#fff',
   },
   welcome: {
     fontSize: 20,
