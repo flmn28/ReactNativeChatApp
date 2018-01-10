@@ -109,7 +109,6 @@ export default class ChatRoom extends Component {
         <View>
           {messages}
         </View>
-        <Button title="トップへ" onPress={Actions.login} />
       </View>
     )
   }
