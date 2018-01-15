@@ -29,7 +29,7 @@ class UserForm extends Component {
           onChangeText={(text) => this.setState({ pass: text })} secureTextEntry={true} />
         <TextInput value={this.state.pass} style={styles.textInput} placeholder='表示画像URL(8~250文字)'
           onChangeText={(text) => this.setState({ image: text })} />
-        <Button title="登録" onPress={Actions.chatroom} />
+        <Button title="登録" onPress={e => { return }} />
       </View>
     )
   }

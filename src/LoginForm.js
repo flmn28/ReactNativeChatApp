@@ -6,6 +6,9 @@ import {
   TextInput,
   Button
 } from 'react-native'
+// import {
+//   StackNavigator,
+// } from 'react-navigation'
 import { Actions } from 'react-native-router-flux'
 
 export default class LoginForm extends Component {
@@ -25,7 +28,8 @@ export default class LoginForm extends Component {
           onChangeText={ (text) => this.setState({id: text}) }  />
         <TextInput value={this.state.pass} style={styles.textInput} placeholder='パスワード'
           onChangeText={(text) => this.setState({ pass: text })} secureTextEntry={true} />
-        <Button title="ログイン" onPress={Actions.chatroom} />
+        <Button title="ログイン" onPress={() => Actions.tabbar({type: 'reset'})} />
+        {/* <Button title="ログイン" onPress={() => this.props.navigation.navigate('Tab')} /> */}
       </View>
     )
   }

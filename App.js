@@ -15,9 +15,14 @@ import {
   Scene,
   Router,
 } from 'react-native-router-flux';
+// import {
+//   StackNavigator,
+//   TabNavigator
+// } from 'react-navigation'
 import LoginForm from './src/LoginForm'
 import ChatRoom from './src/ChatRoom'
-import userManagement from './src/UserManagement'
+import UserManagement from './src/UserManagement'
+import LogoutButton from './src/LogoutButton'
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -34,9 +39,9 @@ export default class App extends Component {
           <Scene key="root">
             <Scene key="login" initial component={LoginForm} title="ログイン" hideNavBar={true} />
             <Scene key="tabbar" tabs={true}>
-              <Scene key="chatroom" component={ChatRoom} title="チャットルーム" hideNavBar={true} />
-              <Scene key="usermanagement" component={userManagement} title="ユーザー管理" hideNavBar={true} />
-              <Scene key="login" component={LoginForm} title="ログアウト" hideNavBar={true} hideTabBar={true} />
+              <Scene key="chat" initial component={ChatRoom} title="チャットルーム" hideNavBar={true} />
+              <Scene key="user" component={UserManagement} title="ユーザー管理" hideNavBar={true} />
+              <Scene key="logout" component={LogoutButton} title="ログアウト" hideNavBar={true} />
             </Scene>
           </Scene>
         </Router>
@@ -44,6 +49,34 @@ export default class App extends Component {
     );
   }
 }
+
+// const TabScreen = TabNavigator({
+//   Chat: {
+//     screen: ChatRoom
+//   },
+//   User: {
+//     screen: UserManagement
+//   },
+//   Login: {
+//     screen: LoginForm
+//   }
+// }, {
+//   tabBarPosition: 'bottom',
+//   animationEnabled: true
+// })
+
+// const App = StackNavigator({
+//   Login: {
+//     screen: LoginForm,
+//   },
+//   Tab: {
+//     screen: TabScreen
+//   }
+// }, {
+//   headerMode: 'none'
+// });
+
+// export default App
 
 const styles = StyleSheet.create({
   container: {
