@@ -5,20 +5,62 @@ import {
   View,
   TextInput,
   Button,
-  Image
+  Image,
+  AsyncStorage
 } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 
 class UserForm extends Component {
+
+  formatDate = (date) => {
+    let format = 'YYYY/MM/DD'
+    format = format.replace(/YYYY/g, date.getFullYear())
+    format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2))
+    format = format.replace(/DD/g, ('0' + date.getDate()).slice(-2))
+    return format
+  }
+
+  createNewUser = () => {
+    let users = this.props.users
+    const newUser = {
+      id: this.state.name,
+      password: this.state.pass,
+      image: this.state.image,
+      createdAt: this.formatDate(new Date())
+    }
+    users.unshift(newUser)
+    AsyncStorage.setItem('users', JSON.stringify(users))
+
+    this.props.setUser()
+    this.setState({
+      name: '',
+      pass: '',
+      image: '',
+    })
+      
+  }
 
   constructor (props) {
     super(props)
     this.state = {
       name: '',
       pass: '',
-      image: ''
+      image: '',
+      users: this.props.users
     }
   }
+
+  // createUser () {
+  //   const newUser = {
+  //     id: this.state.name,
+  //     password: this.state.pass,
+  //     image: this.state.image,
+  //     createdAt: this.formatDate(new Date())
+  //   }
+  //   let users = [newUser]
+  //   alert(JSON.stringify(users));
+  //   AsyncStorage.setItem('users', JSON.stringify(users))
+  // }
 
   render () {
     return (
@@ -27,9 +69,9 @@ class UserForm extends Component {
           onChangeText={(text) => this.setState({ name: text })} />
         <TextInput value={this.state.pass} style={styles.textInput} placeholder='パスワード(4~20文字)'
           onChangeText={(text) => this.setState({ pass: text })} secureTextEntry={true} />
-        <TextInput value={this.state.pass} style={styles.textInput} placeholder='表示画像URL(8~250文字)'
+        <TextInput value={this.state.image} style={styles.textInput} placeholder='表示画像URL(8~250文字)'
           onChangeText={(text) => this.setState({ image: text })} />
-        <Button title="登録" onPress={e => { return }} />
+        <Button title="登録" onPress={e => this.createNewUser(e)} />
       </View>
     )
   }
@@ -37,59 +79,65 @@ class UserForm extends Component {
 
 export default class UserManagement extends Component {
 
-  render () {
-    const users = [
-      {
-        name: 'user1',
-        pass: 'password1',
-        image: 'https://facebook.github.io/react-native/docs/assets/favicon.png',
-        createdAt: new Date(2018, 1, 5, 15, 0, 0)
-      },
-      {
-        name: 'user2',
-        pass: 'password2',
-        image: 'https://facebook.github.io/react-native/docs/assets/favicon.png',
-        createdAt: new Date(2018, 1, 5, 15, 30, 0)
-      },
-      {
-        name: 'user3',
-        pass: 'password3',
-        image: 'https://facebook.github.io/react-native/docs/assets/favicon.png',
-        createdAt: new Date(2018, 1, 5, 16, 0, 0)
-      }
-    ]
-
-    const sorted_users = users.sort((user1, user2) => {
-      if (user1.createdAt < user2.createdAt) return 1
-      if (user1.createdAt > user2.createdAt) return -1
-      return 0
-    })
-
-    formatDate = (date) => {
-      let format = 'YYYY/MM/DD'
-      format = format.replace(/YYYY/g, date.getFullYear())
-      format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2))
-      format = format.replace(/DD/g, ('0' + date.getDate()).slice(-2))
-      return format
+  setUserData = async() => {
+    try {
+      let data = await AsyncStorage.getItem('users')
+      let users = JSON.parse(data)
+      this.setState ({
+        users: users
+      })
+    } catch (error) {
+      alert(error)
     }
+  }
 
-    const userList = sorted_users.map((e, i) => (
-      <View key={i + 1} style={styles.userItem}>
+  deleteUser = async(e, user) => {
+    try {
+      let data = await AsyncStorage.getItem('users')
+      let users = JSON.parse(data)
+      users.some((v, i) => {
+        if (v.id == user.id) users.splice(i, 1);
+      })
+      AsyncStorage.setItem('users', JSON.stringify(users))
+      this.setState({
+        users: users
+      })
+      
+    } catch (error) {
+      alert(error)
+    }
+  }
+
+  constructor (props) {
+    super()
+    this.state = {
+      users: [],
+    }
+  }
+
+  componentWillMount () {
+    this.setUserData()
+  }
+
+  render () {
+
+    const userList = this.state.users.map((user, i) => (
+      <View key={i} style={styles.userItem}>
         <View style={styles.userLeft}>
           <Image
             style={styles.userImage}
-            source={{ uri: e.image }}
+            source={{ uri: user.image }}
           />
           <Text style={styles.userName}>
-            {e.name}
+            {user.id}
           </Text>
         </View>
         <View style={styles.userRight}>
           <Text style={styles.userCreatedAt}>
-            {formatDate(e.createdAt)}
+            {user.createdAt}
           </Text>
           <View style={styles.userDeleteBtn}>
-            <Button title="削除" onPress={e => {return}} />
+            <Button title="削除" onPress={e => this.deleteUser(e, user)} />
           </View>
         </View>
       </View>
@@ -97,7 +145,7 @@ export default class UserManagement extends Component {
 
     return (
       <View>
-        <UserForm />
+        <UserForm users={this.state.users} setUser={e => this.setUserData(e)} />
         <View>
           <Text style={styles.listLabel}>
             ユーザー一覧
