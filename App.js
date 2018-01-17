@@ -15,10 +15,6 @@ import {
   Scene,
   Router,
 } from 'react-native-router-flux';
-// import {
-//   StackNavigator,
-//   TabNavigator
-// } from 'react-navigation'
 import LoginForm from './src/LoginForm'
 import ChatRoom from './src/ChatRoom'
 import UserManagement from './src/UserManagement'
@@ -49,34 +45,6 @@ export default class App extends Component {
     );
   }
 }
-
-// const TabScreen = TabNavigator({
-//   Chat: {
-//     screen: ChatRoom
-//   },
-//   User: {
-//     screen: UserManagement
-//   },
-//   Login: {
-//     screen: LoginForm
-//   }
-// }, {
-//   tabBarPosition: 'bottom',
-//   animationEnabled: true
-// })
-
-// const App = StackNavigator({
-//   Login: {
-//     screen: LoginForm,
-//   },
-//   Tab: {
-//     screen: TabScreen
-//   }
-// }, {
-//   headerMode: 'none'
-// });
-
-// export default App
 
 const styles = StyleSheet.create({
   container: {

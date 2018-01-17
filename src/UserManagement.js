@@ -23,8 +23,8 @@ class UserForm extends Component {
   createNewUser = () => {
     let users = this.props.users
     const newUser = {
-      id: this.state.name,
-      password: this.state.pass,
+      name: this.state.name,
+      password: this.state.password,
       image: this.state.image,
       createdAt: this.formatDate(new Date())
     }
@@ -34,7 +34,7 @@ class UserForm extends Component {
     this.props.setUser()
     this.setState({
       name: '',
-      pass: '',
+      password: '',
       image: '',
     })
       
@@ -44,7 +44,7 @@ class UserForm extends Component {
     super(props)
     this.state = {
       name: '',
-      pass: '',
+      password: '',
       image: '',
       users: this.props.users
     }
@@ -52,8 +52,8 @@ class UserForm extends Component {
 
   // createUser () {
   //   const newUser = {
-  //     id: this.state.name,
-  //     password: this.state.pass,
+  //     name: this.state.name,
+  //     password: this.state.password,
   //     image: this.state.image,
   //     createdAt: this.formatDate(new Date())
   //   }
@@ -67,8 +67,8 @@ class UserForm extends Component {
       <View style={styles.formContainer}>
         <TextInput value={this.state.name} style={styles.textInput} placeholder='ユーザー名(2~20文字)'
           onChangeText={(text) => this.setState({ name: text })} />
-        <TextInput value={this.state.pass} style={styles.textInput} placeholder='パスワード(4~20文字)'
-          onChangeText={(text) => this.setState({ pass: text })} secureTextEntry={true} />
+        <TextInput value={this.state.password} style={styles.textInput} placeholder='パスワード(4~20文字)'
+          onChangeText={(text) => this.setState({ password: text })} secureTextEntry={true} />
         <TextInput value={this.state.image} style={styles.textInput} placeholder='表示画像URL(8~250文字)'
           onChangeText={(text) => this.setState({ image: text })} />
         <Button title="登録" onPress={e => this.createNewUser(e)} />
@@ -96,7 +96,7 @@ export default class UserManagement extends Component {
       let data = await AsyncStorage.getItem('users')
       let users = JSON.parse(data)
       users.some((v, i) => {
-        if (v.id == user.id) users.splice(i, 1);
+        if (v.name == user.name) users.splice(i, 1);
       })
       AsyncStorage.setItem('users', JSON.stringify(users))
       this.setState({
@@ -129,7 +129,7 @@ export default class UserManagement extends Component {
             source={{ uri: user.image }}
           />
           <Text style={styles.userName}>
-            {user.id}
+            {user.name}
           </Text>
         </View>
         <View style={styles.userRight}>

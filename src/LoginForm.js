@@ -26,8 +26,8 @@ export default class LoginForm extends Component {
   constructor (props) {
     super (props)
     this.state = {
-      id: '',
-      pass: '',
+      name: '',
+      password: '',
       users: []
     }
   }
@@ -39,7 +39,7 @@ export default class LoginForm extends Component {
   LoginCheck () {
     let user = ''
     this.state.users.forEach((v, i) => {
-      if (v.id === this.state.id) user = v
+      if (v.name === this.state.name) user = v
     })
 
     if (user === '') {
@@ -47,7 +47,7 @@ export default class LoginForm extends Component {
       return
     }
     
-    if (this.state.pass !== user.password) {
+    if (this.state.password !== user.password) {
       alert('パスワードが間違っています')
       return
     }
@@ -59,10 +59,10 @@ export default class LoginForm extends Component {
   render () {
     return (
       <View style={styles.formContainer}>
-        <TextInput value={this.state.id} style={styles.textInput} placeholder='ユーザーID'
-          onChangeText={ (text) => this.setState({id: text}) }  />
-        <TextInput value={this.state.pass} style={styles.textInput} placeholder='パスワード'
-          onChangeText={(text) => this.setState({ pass: text })} secureTextEntry={true} />
+        <TextInput value={this.state.name} style={styles.textInput} placeholder='ユーザー名'
+          onChangeText={ (text) => this.setState({name: text}) }  />
+        <TextInput value={this.state.password} style={styles.textInput} placeholder='パスワード'
+          onChangeText={(text) => this.setState({ password: text })} secureTextEntry={true} />
         <Button title="ログイン" onPress={(e) => this.LoginCheck(e)} />
       </View>
     )

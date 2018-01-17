@@ -15,8 +15,8 @@ export default class LogoutButton extends Component {
   constructor (props) {
     super (props)
     this.state = {
-      id: '',
-      pass: ''
+      name: '',
+      password: ''
     }
   }
 
