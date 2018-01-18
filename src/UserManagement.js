@@ -21,7 +21,8 @@ class UserForm extends Component {
       name: '',
       password: '',
       image: '',
-      users: this.props.users
+      users: this.props.users,
+      validateMessages: []
     }
   }
 
@@ -34,6 +35,8 @@ class UserForm extends Component {
   }
 
   createNewUser = () => {
+    if (this.validationCheck()) return
+
     let users = this.props.users
     const newUser = {
       name: this.state.name,
@@ -50,13 +53,33 @@ class UserForm extends Component {
       password: '',
       image: '',
     })
-      
+  }
+
+  validationCheck =  () => {
+    let messages = []
+    if (this.state.name.length < 2) messages.push('ユーザー名は2文字以上入力してください')
+    if (this.state.name.length > 20) messages.push('ユーザー名は20文字以内で入力してください')
+    if (this.state.password.length < 4) messages.push('パスワードは4文字以上入力してください')
+    if (this.state.password.length > 20) messages.push('パスワードは20文字以内で入力してください')
+    if (this.state.image.length < 8) messages.push('表示画像URLは8文字以上入力してください')
+    if (this.state.image.length > 250) messages.push('表示画像URLは250文字以内で入力してください')
+    this.setState({
+      validateMessages: messages
+    })
+    return messages.length > 0
   }
 
   render () {
+    const validateMessages = this.state.validateMessages.map((message, i) => (
+      <Text key={i + 1} style={styles.validateMessage}>
+        {message}
+      </Text>
+    ))
+
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.formContainer}>
+          {validateMessages}
           <TextInput value={this.state.name} style={styles.textInput} placeholder='ユーザー名(2~20文字)'
             onChangeText={(text) => this.setState({ name: text })} />
           <TextInput value={this.state.password} style={styles.textInput} placeholder='パスワード(4~20文字)'
@@ -115,7 +138,7 @@ export default class UserManagement extends Component {
   render () {
 
     const userList = this.state.users.map((user, i) => (
-      <View key={i} style={styles.userItem}>
+      <View key={i + 1} style={styles.userItem}>
         <View style={styles.userLeft}>
           <Image
             style={styles.userImage}
@@ -155,6 +178,9 @@ const styles = StyleSheet.create({
     marginTop: 25,
     padding: 20,
     paddingTop: 30,
+  },
+  validateMessage: {
+    color: '#f00'
   },
   textInput: {
     borderWidth: 1,
