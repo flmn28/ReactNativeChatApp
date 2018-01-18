@@ -6,11 +6,21 @@ import {
   TextInput,
   Button,
   Image,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard,
   AsyncStorage
 } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 
 class ChatForm extends Component {
+
+  constructor(props) {
+    super(props),
+      this.state = {
+        text: ''
+      }
+  }
 
   formatDate = (date) => {
     let format = 'YYYY/MM/DD hh:mm'
@@ -37,38 +47,32 @@ class ChatForm extends Component {
     this.setState({
       text: ''
     })
-
-  }
-
-  constructor (props) {
-    super(props),
-    this.state = {
-      text: ''
-    }
   }
 
   render () {
     return (
-      <View style={styles.formContainer}>
-        <View style={styles.formLeft}>
-          <Image
-            style={styles.userImage}
-            source={{ uri: this.props.user.image }}
-          />
-          <Text>
-            {this.props.user.name}
-           </Text>
-        </View>
-        <View style={styles.formRight}>
-          <View>
-          <TextInput style={styles.textInput} value={this.state.text} 
-              multiline={true} onChangeText={text => this.setState({text})} />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.formContainer}>
+          <View style={styles.formLeft}>
+            <Image
+              style={styles.userImage}
+              source={{ uri: this.props.user.image }}
+            />
+            <Text>
+              {this.props.user.name}
+            </Text>
           </View>
-          <View style={styles.buttonContainer}>
-            <Button title='投稿' onPress={e => this.createNewPost(e)} />
+          <View style={styles.formRight}>
+            <View>
+              <TextInput style={styles.textInput} value={this.state.text}
+                multiline={true} onChangeText={text => this.setState({text})} />
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button title='投稿' onPress={e => this.createNewPost(e)} />
+            </View>
           </View>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     )
   }
 }
@@ -160,17 +164,20 @@ export default class ChatRoom extends Component {
     ))
 
     return (
-      <View>
+      <View style={styles.container}>
         <ChatForm posts={this.state.posts} user={this.state.currentUser} setPosts={e => this.setPosts(e)} />
-        <View>
+        <ScrollView>
           {postList}
-        </View>
+        </ScrollView>
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1 
+  },
   formContainer: {
     flexDirection: 'row',
     marginTop: 25,

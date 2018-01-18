@@ -12,14 +12,6 @@ import {
 
 export default class LogoutButton extends Component {
 
-  constructor (props) {
-    super (props)
-    this.state = {
-      name: '',
-      password: ''
-    }
-  }
-
   Logout () {
     AsyncStorage.setItem('currentUser', JSON.stringify(''))
     Actions.login({ type: 'reset' })

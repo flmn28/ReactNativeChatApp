@@ -11,6 +11,20 @@ import { Actions } from 'react-native-router-flux'
 
 export default class LoginForm extends Component {
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      name: '',
+      password: '',
+      users: []
+    }
+  }
+
+  componentWillMount() {
+    this.setUserData()
+    this.currentUserCheck()
+  }
+
   setUserData = async () => {
     try {
       let data = await AsyncStorage.getItem('users')
@@ -50,17 +64,16 @@ export default class LoginForm extends Component {
     return format
   }
 
-  constructor (props) {
-    super (props)
-    this.state = {
-      name: '',
-      password: '',
-      users: []
+  currentUserCheck = async () => {
+    try {
+      let data = await AsyncStorage.getItem('currentUser')
+      let user = JSON.parse(data)
+      if (user !== null && user.length !== 0 ) {
+        Actions.tabbar({ type: 'reset' }) 
+      }
+    } catch (error) {
+      alert(error)
     }
-  }
-
-  componentWillMount () {
-    this.setUserData()
   }
 
   LoginCheck () {
@@ -87,7 +100,7 @@ export default class LoginForm extends Component {
     return (
       <View style={styles.formContainer}>
         <TextInput value={this.state.name} style={styles.textInput} placeholder='ユーザー名'
-          onChangeText={ (text) => this.setState({name: text}) }  />
+          onChangeText={(text) => this.setState({ name: text })} />
         <TextInput value={this.state.password} style={styles.textInput} placeholder='パスワード'
           onChangeText={(text) => this.setState({ password: text })} secureTextEntry={true} />
         <Button title="ログイン" onPress={(e) => this.LoginCheck(e)} />

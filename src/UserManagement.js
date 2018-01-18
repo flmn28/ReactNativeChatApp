@@ -6,11 +6,24 @@ import {
   TextInput,
   Button,
   Image,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard,
   AsyncStorage
 } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 
 class UserForm extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      name: '',
+      password: '',
+      image: '',
+      users: this.props.users
+    }
+  }
 
   formatDate = (date) => {
     let format = 'YYYY/MM/DD'
@@ -40,32 +53,35 @@ class UserForm extends Component {
       
   }
 
-  constructor (props) {
-    super(props)
-    this.state = {
-      name: '',
-      password: '',
-      image: '',
-      users: this.props.users
-    }
-  }
-
   render () {
     return (
-      <View style={styles.formContainer}>
-        <TextInput value={this.state.name} style={styles.textInput} placeholder='ユーザー名(2~20文字)'
-          onChangeText={(text) => this.setState({ name: text })} />
-        <TextInput value={this.state.password} style={styles.textInput} placeholder='パスワード(4~20文字)'
-          onChangeText={(text) => this.setState({ password: text })} secureTextEntry={true} />
-        <TextInput value={this.state.image} style={styles.textInput} placeholder='表示画像URL(8~250文字)'
-          onChangeText={(text) => this.setState({ image: text })} />
-        <Button title="登録" onPress={e => this.createNewUser(e)} />
-      </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.formContainer}>
+          <TextInput value={this.state.name} style={styles.textInput} placeholder='ユーザー名(2~20文字)'
+            onChangeText={(text) => this.setState({ name: text })} />
+          <TextInput value={this.state.password} style={styles.textInput} placeholder='パスワード(4~20文字)'
+            onChangeText={(text) => this.setState({ password: text })} secureTextEntry={true} />
+          <TextInput value={this.state.image} style={styles.textInput} placeholder='表示画像URL(8~250文字)'
+            onChangeText={(text) => this.setState({ image: text })} />
+          <Button title="登録" onPress={e => this.createNewUser(e)} />
+        </View>
+      </TouchableWithoutFeedback>
     )
   }
 }
 
 export default class UserManagement extends Component {
+
+  constructor(props) {
+    super()
+    this.state = {
+      users: [],
+    }
+  }
+
+  componentWillMount() {
+    this.setUserData()
+  }
 
   setUserData = async() => {
     try {
@@ -96,17 +112,6 @@ export default class UserManagement extends Component {
     }
   }
 
-  constructor (props) {
-    super()
-    this.state = {
-      users: [],
-    }
-  }
-
-  componentWillMount () {
-    this.setUserData()
-  }
-
   render () {
 
     const userList = this.state.users.map((user, i) => (
@@ -132,14 +137,14 @@ export default class UserManagement extends Component {
     ))
 
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         <UserForm users={this.state.users} setUser={e => this.setUserData(e)} />
-        <View>
-          <Text style={styles.listLabel}>
-            ユーザー一覧
-          </Text>
+        <Text style={styles.listLabel}>
+          ユーザー一覧
+        </Text>
+        <ScrollView>
           {userList}
-        </View>
+         </ScrollView>
       </View>
     )
   }
