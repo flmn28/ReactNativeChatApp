@@ -79,12 +79,7 @@ export default class ChatRoom extends Component {
     super(props)
     this.state = {
       currentUser: '',
-      posts: [{
-        userName: 'user1',
-        body: 'メッセージ1メッセージ1メッセージ1メッセージ1メッセージ1メッセージ1メッセージ1メッセージ1メッセージ1',
-        userImage: 'https://facebook.github.io/react-native/docs/assets/favicon.png',
-        createdAt: 'aaa'
-      }]
+      posts: []
     }
   }
 
@@ -97,6 +92,7 @@ export default class ChatRoom extends Component {
     try {
       let data = await AsyncStorage.getItem('posts')
       let posts = JSON.parse(data)
+      if (posts !== null)
       this.setState({
         posts: posts
       })
@@ -117,22 +113,48 @@ export default class ChatRoom extends Component {
     }
   }
 
+  deletePost = async(e, post) => {
+    try {
+      let data = await AsyncStorage.getItem('posts')
+      let posts = JSON.parse(data)
+      posts.some((v, i) => {
+        if (v.body == post.body && v.createdAt == post.createdAt) posts.splice(i, 1);
+      })
+      AsyncStorage.setItem('posts', JSON.stringify(posts))
+      this.setState({
+        posts: posts
+      })
+      
+    } catch (error) {
+      alert(error)
+    }
+  }
+
   render () {
-    const postList = this.state.posts.map((e, i) => (
+    const postList = this.state.posts.map((post, i) => (
       <View key={i + 1} style={styles.messageItem}>
         <View style={styles.messageLeft}>
           <Image
             style={styles.userImage}
-            source={{ uri: e.userImage }}
+            source={{ uri: post.userImage }}
           />
         </View>
         <View style={styles.messageRight}>
           <Text>
-            {e.userName}  {e.createdAt}
+            {post.userName}  {post.createdAt}
           </Text>
           <Text>
-            {e.body}
+            {post.body}
           </Text>
+          {(() => {
+            if (post.userName == this.state.currentUser.name) {
+              return (
+                <View style={styles.buttonContainer}>
+                  <Button title="削除" onPress={e => this.deletePost(e, post)} />
+                </View>
+              )
+            }
+          })()}
         </View>
       </View>
     ))

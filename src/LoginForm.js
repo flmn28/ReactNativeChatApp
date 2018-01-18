@@ -15,7 +15,7 @@ export default class LoginForm extends Component {
     try {
       let data = await AsyncStorage.getItem('users')
       let users = JSON.parse(data)
-      if (users.length > 0) {
+      if (users !== null && users.length > 0) {
         this.setState({
           users: users
         })
