@@ -5,11 +5,40 @@ import {
   View,
   TextInput,
   Button,
-  Image
+  Image,
+  AsyncStorage
 } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 
 class ChatForm extends Component {
+
+  formatDate = (date) => {
+    let format = 'YYYY/MM/DD hh:mm'
+    format = format.replace(/YYYY/g, date.getFullYear())
+    format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2))
+    format = format.replace(/DD/g, ('0' + date.getDate()).slice(-2))
+    format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2))
+    format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2))
+    return format
+  }
+
+  createNewPost = () => {
+    let posts = this.props.posts
+    const newPost = {
+      userName: this.props.user.name,
+      body: this.state.text,
+      image: this.props.user.image,
+      createdAt: this.formatDate(new Date())
+    }
+    posts.unshift(newPost)
+    AsyncStorage.setItem('posts', JSON.stringify(posts))
+
+    this.props.setPosts()
+    this.setState({
+      text: ''
+    })
+
+  }
 
   constructor (props) {
     super(props),
@@ -24,10 +53,10 @@ class ChatForm extends Component {
         <View style={styles.formLeft}>
           <Image
             style={styles.userImage}
-            source={{ uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png' }}
+            source={{ uri: this.props.user.image }}
           />
           <Text>
-            SampleUser
+            {this.props.user.name}
            </Text>
         </View>
         <View style={styles.formRight}>
@@ -36,7 +65,7 @@ class ChatForm extends Component {
               multiline={true} onChangeText={text => this.setState({text})} />
           </View>
           <View style={styles.buttonContainer}>
-            <Button title='投稿' onPress={e => {return}} />
+            <Button title='投稿' onPress={e => this.createNewPost(e)} />
           </View>
         </View>
       </View>
@@ -46,45 +75,50 @@ class ChatForm extends Component {
 
 export default class ChatRoom extends Component {
 
-  render () {
-    const posts = [
-      {
-        name: 'user1',
+  constructor (props) {
+    super(props)
+    this.state = {
+      currentUser: '',
+      posts: [{
+        userName: 'user1',
         body: 'メッセージ1メッセージ1メッセージ1メッセージ1メッセージ1メッセージ1メッセージ1メッセージ1メッセージ1',
         userImage: 'https://facebook.github.io/react-native/docs/assets/favicon.png',
-        createdAt: new Date(2018, 1, 7, 10, 0, 0)
-      },
-      {
-        name: 'user2',
-        body: 'メッセージ2メッセージ2メッセージ2メッセージ2メッセージ2メッセージ2メッセージ2メッセージ2メッセージ2メッセージ2メッセージ2',
-        userImage: 'https://facebook.github.io/react-native/docs/assets/favicon.png',
-        createdAt: new Date(2018, 1, 7, 10, 30, 0)
-      },
-      {
-        name: 'user3',
-        body: 'メッセージ3メッセージ3メッセージ3メッセージ3メッセージ3メッセージ3',
-        userImage: 'https://facebook.github.io/react-native/docs/assets/favicon.png',
-        createdAt: new Date(2018, 1, 7, 11, 0, 0)
-      }
-    ]
-
-    const sorted_posts = posts.sort((post1, post2) => {
-      if (post1.createdAt < post2.createdAt) return 1
-      if (post1.createdAt > post2.createdAt) return -1
-      return 0
-    })
-
-    formatDate = (date) => {
-      let format = 'YYYY/MM/DD hh:mm'
-      format = format.replace(/YYYY/g, date.getFullYear())
-      format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2))
-      format = format.replace(/DD/g, ('0' + date.getDate()).slice(-2))
-      format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2))
-      format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2))
-      return format
+        createdAt: 'aaa'
+      }]
     }
+  }
 
-    const messages = sorted_posts.map((e, i) => (
+  componentWillMount () {
+    this.setCurrentUser()
+    this.setPosts()
+  }
+
+  setPosts = async () => {
+    try {
+      let data = await AsyncStorage.getItem('posts')
+      let posts = JSON.parse(data)
+      this.setState({
+        posts: posts
+      })
+    } catch (error) {
+      alert(error)
+    }
+  }
+
+  setCurrentUser = async () => {
+    try {
+      let data = await AsyncStorage.getItem('currentUser')
+      let user = JSON.parse(data)
+      this.setState({
+        currentUser: user
+      })
+    } catch (error) {
+      alert(error)
+    }
+  }
+
+  render () {
+    const postList = this.state.posts.map((e, i) => (
       <View key={i + 1} style={styles.messageItem}>
         <View style={styles.messageLeft}>
           <Image
@@ -94,7 +128,7 @@ export default class ChatRoom extends Component {
         </View>
         <View style={styles.messageRight}>
           <Text>
-            {e.name}  {formatDate(e.createdAt)}
+            {e.userName}  {e.createdAt}
           </Text>
           <Text>
             {e.body}
@@ -105,9 +139,9 @@ export default class ChatRoom extends Component {
 
     return (
       <View>
-        <ChatForm />
+        <ChatForm posts={this.state.posts} user={this.state.currentUser} setPosts={e => this.setPosts(e)} />
         <View>
-          {messages}
+          {postList}
         </View>
       </View>
     )

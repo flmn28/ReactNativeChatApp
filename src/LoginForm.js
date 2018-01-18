@@ -15,12 +15,39 @@ export default class LoginForm extends Component {
     try {
       let data = await AsyncStorage.getItem('users')
       let users = JSON.parse(data)
-      this.setState({
-        users: users
-      })
+      if (users.length > 0) {
+        this.setState({
+          users: users
+        })
+      } else {
+        this.createInitialUser()
+      }
     } catch (error) {
       alert(error)
     }
+  }
+
+  createInitialUser () {
+    let initialUser = [
+      {
+        name: 'Admin',
+        password: 'password',
+        image: 'http://img1.ak.crunchyroll.com/i/spire1/95883bc9bf1d7b12d572e8dd62e5ce711468942321_full.jpg',
+        createdAt: this.formatDate(new Date())
+      }
+    ]
+    AsyncStorage.setItem('users', JSON.stringify(initialUser))
+    this.setState({
+      users: initialUser
+    })
+  }
+
+  formatDate = (date) => {
+    let format = 'YYYY/MM/DD'
+    format = format.replace(/YYYY/g, date.getFullYear())
+    format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2))
+    format = format.replace(/DD/g, ('0' + date.getDate()).slice(-2))
+    return format
   }
 
   constructor (props) {

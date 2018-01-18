@@ -50,18 +50,6 @@ class UserForm extends Component {
     }
   }
 
-  // createUser () {
-  //   const newUser = {
-  //     name: this.state.name,
-  //     password: this.state.password,
-  //     image: this.state.image,
-  //     createdAt: this.formatDate(new Date())
-  //   }
-  //   let users = [newUser]
-  //   alert(JSON.stringify(users));
-  //   AsyncStorage.setItem('users', JSON.stringify(users))
-  // }
-
   render () {
     return (
       <View style={styles.formContainer}>
