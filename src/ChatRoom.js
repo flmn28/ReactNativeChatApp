@@ -40,7 +40,7 @@ class ChatForm extends Component {
     const newPost = {
       userName: this.props.user.name,
       body: this.state.text,
-      image: this.props.user.image,
+      userImage: this.props.user.image,
       createdAt: this.formatDate(new Date())
     }
     posts.unshift(newPost)

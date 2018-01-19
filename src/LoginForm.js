@@ -127,7 +127,7 @@ export default class LoginForm extends Component {
 const styles = StyleSheet.create({
   formContainer: {
     margin: 30,
-    marginTop: 200,
+    marginTop: 170,
     padding: 20,
     paddingTop: 30,
     borderWidth: 1,
