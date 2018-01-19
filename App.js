@@ -23,19 +23,19 @@ import LogoutButton from './src/LogoutButton'
 export default class App extends Component {
   render() {
     return (
-        <View style={styles.container}>
-          <Router>
-            <Scene key="root">
-              <Scene key="login" initial component={LoginForm} title="ログイン" hideNavBar={true} />
-              <Scene key="tabbar" tabs={true}>
-                <Scene key="chat" initial component={ChatRoom} title="チャットルーム" hideNavBar={true} />
-                <Scene key="user" component={UserManagement} title="ユーザー管理" hideNavBar={true} />
-                <Scene key="logout" component={LogoutButton} title="ログアウト" hideNavBar={true} />
-              </Scene>
+      <View style={styles.container}>
+        <Router>
+          <Scene key="root">
+            <Scene key="login" initial component={LoginForm} title="ログイン" hideNavBar={true} />
+            <Scene key="tabbar" tabs={true}>
+              <Scene key="chat" initial component={ChatRoom} title="チャットルーム" hideNavBar={true} />
+              <Scene key="user" component={UserManagement} title="ユーザー管理" hideNavBar={true} />
+              <Scene key="logout" component={LogoutButton} title="ログアウト" hideNavBar={true} />
             </Scene>
-          </Router>
-        </View>
-    );
+          </Scene>
+        </Router>
+      </View>
+    )
   }
 }
 

@@ -108,7 +108,6 @@ export default class LoginForm extends Component {
   }
 
   render () {
-
     return (
       <View style={styles.formContainer}>
         <Text style={styles.validationMessage}>
