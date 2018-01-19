@@ -19,8 +19,7 @@ class ChatForm extends Component {
     super(props),
       this.state = {
         text: '',
-        // isValid: false,
-        validateMessage: ''
+        validationMessage: ''
       }
   }
 
@@ -58,19 +57,10 @@ class ChatForm extends Component {
     if (this.state.text.length < 1) message = '1文字以上入力してください'
     if (this.state.text.length > 300) message = '300文字以内で入力してください'
     this.setState({
-      validateMessage: message
+      validationMessage: message
     })
     return message !== ''
   }
-
-  // textChanged (text) {
-  //   let message =　(text.length > 300) ? '300字以内で入力してください' : ''
-  //   this.setState({
-  //     text: text,
-  //     isValid: text.length > 0 && text.length <= 300,
-  //     validateMessage: message
-  //   })
-  // }
 
   render () {
     return (
@@ -88,11 +78,10 @@ class ChatForm extends Component {
           <View style={styles.formRight}>
             <View>
               <TextInput style={styles.textInput} value={this.state.text}
-                // multiline={true} onChangeText={text => this.textChanged(text)} />
                 multiline={true} onChangeText={text => this.setState({text})} />
             </View>
-            <Text style={styles.validateMessage}>
-              {this.state.validateMessage}
+            <Text style={styles.validationMessage}>
+              {this.state.validationMessage}
             </Text>
             <View style={styles.buttonContainer}>
               <Button title='投稿' onPress={e => this.createNewPost(e)} />
@@ -123,10 +112,11 @@ export default class ChatRoom extends Component {
     try {
       let data = await AsyncStorage.getItem('posts')
       let posts = JSON.parse(data)
-      if (posts !== null)
-      this.setState({
-        posts: posts
-      })
+      if (posts !== null) {
+        this.setState({
+          posts: posts
+        })
+      }
     } catch (error) {
       alert(error)
     }
@@ -225,7 +215,7 @@ const styles = StyleSheet.create({
   formRight: {
     flex: 4,
   },
-  validateMessage: {
+  validationMessage: {
     color: '#f00'
   },
   buttonContainer: {

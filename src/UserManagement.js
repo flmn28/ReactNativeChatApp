@@ -22,7 +22,7 @@ class UserForm extends Component {
       password: '',
       image: '',
       users: this.props.users,
-      validateMessages: []
+      validationMessages: []
     }
   }
 
@@ -64,14 +64,14 @@ class UserForm extends Component {
     if (this.state.image.length < 8) messages.push('表示画像URLは8文字以上入力してください')
     if (this.state.image.length > 250) messages.push('表示画像URLは250文字以内で入力してください')
     this.setState({
-      validateMessages: messages
+      validationMessages: messages
     })
     return messages.length > 0
   }
 
   render () {
-    const validateMessages = this.state.validateMessages.map((message, i) => (
-      <Text key={i + 1} style={styles.validateMessage}>
+    const validationMessages = this.state.validationMessages.map((message, i) => (
+      <Text key={i + 1} style={styles.validationMessages}>
         {message}
       </Text>
     ))
@@ -79,7 +79,7 @@ class UserForm extends Component {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.formContainer}>
-          {validateMessages}
+          {validationMessages}
           <TextInput value={this.state.name} style={styles.textInput} placeholder='ユーザー名(2~20文字)'
             onChangeText={(text) => this.setState({ name: text })} />
           <TextInput value={this.state.password} style={styles.textInput} placeholder='パスワード(4~20文字)'
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 30,
   },
-  validateMessage: {
+  validationMessages: {
     color: '#f00'
   },
   textInput: {

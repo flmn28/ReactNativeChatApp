@@ -16,7 +16,8 @@ export default class LoginForm extends Component {
     this.state = {
       name: '',
       password: '',
-      users: []
+      users: [],
+      validationMessage: ''
     }
   }
 
@@ -76,34 +77,48 @@ export default class LoginForm extends Component {
     }
   }
 
-  LoginCheck () {
+  Login () {
     let user = ''
     this.state.users.forEach((v, i) => {
       if (v.name === this.state.name) user = v
     })
 
-    if (user === '') {
-      alert('ユーザーが存在しません')
-      return
-    }
-    
-    if (this.state.password !== user.password) {
-      alert('パスワードが間違っています')
-      return
-    }
+    if (this.loginCheck(user)) return
 
     AsyncStorage.setItem('currentUser', JSON.stringify(user))
     Actions.tabbar({ type: 'reset' })
   }
 
+  loginCheck = (user) => {
+    if (user === '') {
+      this.setState({
+        validationMessage: 'ユーザーが存在しません'
+      })
+      return true
+    }
+
+    if (this.state.password !== user.password) {
+      this.setState({
+        validationMessage: 'パスワードが間違っています'
+      })
+      return true
+    }
+
+    return false
+  }
+
   render () {
+
     return (
       <View style={styles.formContainer}>
+        <Text style={styles.validationMessage}>
+          {this.state.validationMessage}
+        </Text>
         <TextInput value={this.state.name} style={styles.textInput} placeholder='ユーザー名'
           onChangeText={(text) => this.setState({ name: text })} />
         <TextInput value={this.state.password} style={styles.textInput} placeholder='パスワード'
           onChangeText={(text) => this.setState({ password: text })} secureTextEntry={true} />
-        <Button title="ログイン" onPress={(e) => this.LoginCheck(e)} />
+        <Button title="ログイン" onPress={(e) => this.Login(e)} />
       </View>
     )
   }
@@ -118,6 +133,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: '#aaa'
+  },
+  validationMessage: {
+    color: '#f00',
+    marginBottom: 10
   },
   textInput: {
     borderWidth: 1,
