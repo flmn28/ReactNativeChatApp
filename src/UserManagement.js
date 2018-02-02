@@ -57,6 +57,9 @@ class UserForm extends Component {
 
   validationCheck =  () => {
     let messages = []
+    this.props.users.forEach((v) => {
+      if (v.name == this.state.name) messages.push('ユーザー名が既に存在します')
+    })
     if (this.state.name.length < 2) messages.push('ユーザー名は2文字以上入力してください')
     if (this.state.name.length > 20) messages.push('ユーザー名は20文字以内で入力してください')
     if (this.state.password.length < 4) messages.push('パスワードは4文字以上入力してください')
@@ -118,21 +121,15 @@ export default class UserManagement extends Component {
     }
   }
 
-  deleteUser = async(e, user) => {
-    try {
-      let data = await AsyncStorage.getItem('users')
-      let users = JSON.parse(data)
-      users.some((v, i) => {
-        if (v.name == user.name) users.splice(i, 1);
-      })
-      AsyncStorage.setItem('users', JSON.stringify(users))
-      this.setState({
-        users: users
-      })
-      
-    } catch (error) {
-      alert(error)
-    }
+  deleteUser = (e, user) => {
+    let users = this.state.users
+    users.some((v, i) => {
+      if (v.name == user.name) users.splice(i, 1);
+    })
+    AsyncStorage.setItem('users', JSON.stringify(users))
+    this.setState({
+      users: users
+    })
   }
 
   render () {

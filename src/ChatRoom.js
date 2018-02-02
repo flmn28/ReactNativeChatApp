@@ -134,21 +134,15 @@ export default class ChatRoom extends Component {
     }
   }
 
-  deletePost = async(e, post) => {
-    try {
-      let data = await AsyncStorage.getItem('posts')
-      let posts = JSON.parse(data)
-      posts.some((v, i) => {
-        if (v.body == post.body && v.createdAt == post.createdAt) posts.splice(i, 1);
-      })
-      AsyncStorage.setItem('posts', JSON.stringify(posts))
-      this.setState({
-        posts: posts
-      })
-      
-    } catch (error) {
-      alert(error)
-    }
+  deletePost = (e, post) => {
+    let posts = this.state.posts
+    posts.some((v, i) => {
+      if (v.body == post.body && v.createdAt == post.createdAt) posts.splice(i, 1);
+    })
+    AsyncStorage.setItem('posts', JSON.stringify(posts))
+    this.setState({
+      posts: posts
+    })
   }
 
   render () {
